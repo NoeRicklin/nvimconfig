@@ -1,3 +1,2 @@
-vim.o.number = true
-vim.o.relativenumber = false
-
+vim.opt.number = true
+vim.opt.relativenumber = false

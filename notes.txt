@@ -1,0 +1,8 @@
+*Difference vim.opt.<option> -- vim.o.<option>*
+
+vim.opt is slightly better for "setting" an option. It behaves mostly the same as vim.o, but 
+when setting/editing a non boolian option, you set it using a lua table, which is a bit
+nicer than the string you would have to use with vim.o.
+Vim.o is better for "getting" an option (=receiving its current value). That's because you
+can just write `:lua =vim.o.<option>` instead of `lua =vim.opt.<option>:get()`, which is what
+you would have to use with vim.opt (the :lua =[...] just prints the [...]).
