@@ -26,3 +26,11 @@ vim.keymap.set("i", "<M-o>", function ()
     { desc = "Create empty line below current one" }
 )
 
+vim.api.nvim_create_augroup("yank_hl", { clear = true })
+vim.api.nvim_create_autocmd("TextYankPost", {
+	group = "yank_hl",
+	callback = function()
+		vim.highlight.on_yank({ timeout = 150 })
+	end,
+	desc = "Highlights yanked text"
+})

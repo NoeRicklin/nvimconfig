@@ -31,3 +31,15 @@ local right_side = "%<" .. cur_line..":"..cur_column.." ("..percentage..")".." -
 vim.opt.statusline=hi_norm..left_side..hi_hide..right_side..hi_norm..split..center..split..hi_hide..left_side..hi_norm..right_side
 
 buttoncaller = function() vim.b.buttonfunc() end
+
+vim.api.nvim_create_augroup("buttonfunc group", { clear = true })
+vim.api.nvim_create_autocmd("BufEnter", {
+	group = "buttonfunc group",
+	callback = function()
+		if vim.b.buttonfunc == nil then
+			vim.b.buttonfunc = function() vim.cmd("w") end
+		end
+	end,
+	desc = "Default behaviour of statusline button"
+})
+
