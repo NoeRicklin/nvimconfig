@@ -1,3 +1,5 @@
+require "welcome"
+
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
