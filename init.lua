@@ -50,3 +50,5 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 	end,
 	desc = "Highlights yanked text"
 })
+
+vim.opt.path = "/home/noeri/.config/nvim/**"
