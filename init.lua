@@ -52,3 +52,5 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 })
 
 vim.opt.path = "/home/noeri/.config/nvim/**"
+
+vim.filetype.add({pattern = {["/tmp/welcome"] = "welcome"}})
