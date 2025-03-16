@@ -41,12 +41,11 @@ class welcome:
 
             self.new_image()
 
-            self.nvim.command("redraw")
             self.update_cursor()
+            self.nvim.command("redraw")
             sleep(0.06)
 
     def quit(self):
-        self.nvim.command("silent w")
         self.nvim.command("silent bd! 1")
         self.nvim.command("silent !rm /tmp/welcome")
         exit()
@@ -55,4 +54,4 @@ class welcome:
         cursor = self.nvim.api.win_get_cursor(0)
         cursor[0] -= 1
         self.nvim.api.win_set_cursor(0, cursor)
-
+    
