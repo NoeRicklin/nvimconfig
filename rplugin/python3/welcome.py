@@ -14,9 +14,8 @@ class welcome:
         self.nvim.command("e welcome")
         self.nvim.command("so /home/noeri/.config/nvim/ftplugin/welcome.vim")
         self.nvim.command("setlocal buftype=nowrite")
-        self.win_height = self.nvim.api.win_get_height(0)
-        self.win_width = self.nvim.api.win_get_width(0)
-
+        self.set_win_size()
+        
         self.draw_loop()
 
         self.quit()
@@ -52,4 +51,10 @@ class welcome:
         cursor = self.nvim.api.win_get_cursor(0)
         cursor[0] -= 1
         self.nvim.api.win_set_cursor(0, cursor)
+    
+    @pynvim.autocmd("VimResized", pattern="welcome")
+    def set_win_size(self):
+        self.win_height = self.nvim.api.win_get_height(0)
+        self.win_width = self.nvim.api.win_get_width(0)
+
 
