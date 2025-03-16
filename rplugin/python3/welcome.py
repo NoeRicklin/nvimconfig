@@ -11,15 +11,14 @@ class welcome:
 
     @pynvim.command("Welcome")
     def initiate(self):
-        self.nvim.command("e /tmp/welcome")
-        self.nvim.command("silent w")
+        self.nvim.command("e welcome")
         self.nvim.command("so /home/noeri/.config/nvim/ftplugin/welcome.vim")
+        self.nvim.command("setlocal buftype=nowrite")
         self.win_height = self.nvim.api.win_get_height(0)
         self.win_width = self.nvim.api.win_get_width(0)
 
         self.draw_loop()
 
-        self.nvim.command("silent w")
         self.quit()
 
     def new_image(self):
@@ -47,11 +46,10 @@ class welcome:
 
     def quit(self):
         self.nvim.command("silent bd! 1")
-        self.nvim.command("silent !rm /tmp/welcome")
         exit()
 
     def update_cursor(self):
         cursor = self.nvim.api.win_get_cursor(0)
         cursor[0] -= 1
         self.nvim.api.win_set_cursor(0, cursor)
-    
+
