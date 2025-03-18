@@ -1,3 +1,10 @@
+# Shouldn't be able to edit file
+# Should be able to restart welcome screen on command
+# Error on opening 2nd nvim instance with welcome active on 1st
+# Weird behaviour when opening nvim with a file
+# Don't show cursor / remove flickering
+# More control for settings like color and speed
+
 import pynvim
 from time import sleep
 from sys import exit
@@ -12,8 +19,9 @@ class welcome:
     @pynvim.command("Welcome")
     def initiate(self):
         self.nvim.command("e welcome")
-        self.nvim.command("so /home/noeri/.config/nvim/ftplugin/welcome.vim")
+        # self.nvim.command("so /home/noeri/.config/nvim/ftplugin/welcome.vim")
         self.nvim.command("setlocal buftype=nowrite")
+        self.welcome_buf = self.nvim.current.buffer.number
         self.set_win_size()
         
         self.draw_loop()
@@ -29,12 +37,12 @@ class welcome:
             if self.active_cols[col] == 0:
                 self.active_cols.pop(col)
 
-        self.nvim.api.buf_set_lines(1, 0, 0, False, [new_line])
-        self.nvim.api.buf_set_lines(1, self.win_height, self.win_height + 1, False, [])
+        self.nvim.api.buf_set_lines(self.welcome_buf, 0, 0, False, [new_line])
+        self.nvim.api.buf_set_lines(self.welcome_buf, self.win_height, self.win_height + 1, False, [])
 
     def draw_loop(self):
         while (True):
-            if str(self.nvim.api.get_current_buf())[15] != "1":
+            if self.nvim.current.buffer.number != self.welcome_buf:
                 self.quit()
 
             self.new_image()
@@ -44,7 +52,7 @@ class welcome:
             sleep(0.06)
 
     def quit(self):
-        self.nvim.command("silent bd! 1")
+        self.nvim.command(f"silent bd! {self.welcome_buf}")
         exit()
 
     def update_cursor(self):
