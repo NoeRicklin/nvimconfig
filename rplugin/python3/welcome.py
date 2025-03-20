@@ -38,7 +38,7 @@ class welcome:
                 self.active_cols.pop(col)
 
         self.nvim.api.buf_set_lines(self.welcome_buf, 0, 0, False, [new_line])
-        self.nvim.api.buf_set_lines(self.welcome_buf, self.win_height, self.win_height + 1, False, [])
+        self.nvim.api.buf_set_lines(self.welcome_buf, self.win_height, len(self.nvim.current.buffer) + 1, False, [])
 
     def draw_loop(self):
         while (True):
