@@ -3,6 +3,7 @@
 # Error on opening 2nd nvim instance with welcome active on 1st
 # Weird behaviour when opening nvim with a file
 # Don't show cursor / remove flickering
+# Error when cursor moves out of range
 # More control for settings like color and speed
 
 # Check out: scratch-buffer, unlisted, noswapfile, bufhidden=delete, buftype=nowrite
@@ -55,13 +56,13 @@ class welcome:
             sleep(0.06)
 
     def quit(self):
-        self.nvim.api.buf_delete(self.welc_buf, {})
+        self.nvim.command(f"silent bd! {self.welcome_buf.number}")
         exit()
 
     def update_cursor(self):
-        cursor = self.nvim.api.win_get_cursor(0)
-        cursor[0] -= 1
-        self.nvim.api.win_set_cursor(0, cursor)
+        cur_cursor = self.nvim.current.window.cursor
+        new_cursor = (cur_cursor[0] - 1, cur_cursor[1])
+        self.nvim.current.window.cursor = new_cursor
     
     @pynvim.autocmd("VimResized", pattern="welcome")
     def set_win_size(self):
