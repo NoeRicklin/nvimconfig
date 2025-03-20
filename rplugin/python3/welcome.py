@@ -5,6 +5,8 @@
 # Don't show cursor / remove flickering
 # More control for settings like color and speed
 
+# Check out: scratch-buffer, unlisted, noswapfile, bufhidden=delete, buftype=nowrite
+
 import pynvim
 from time import sleep
 from sys import exit
@@ -18,10 +20,9 @@ class welcome:
 
     @pynvim.command("Welcome")
     def initiate(self):
-        self.nvim.command("e welcome")
-        # self.nvim.command("so /home/noeri/.config/nvim/ftplugin/welcome.vim")
-        self.nvim.command("setlocal buftype=nowrite")
-        self.welcome_buf = self.nvim.current.buffer.number
+        self.welc_buf = self.nvim.api.create_buf(True, False)
+        # self.nvim.command(f"echo '{self.welc_buf}'")
+        self.welc_win = self.nvim.api.open_win(self.welc_buf, False, { "relative": "editor", "row": 3, "col": 7, "width": 160, "height": 46, "style": "minimal" })
         self.set_win_size()
         
         self.draw_loop()
@@ -37,22 +38,24 @@ class welcome:
             if self.active_cols[col] == 0:
                 self.active_cols.pop(col)
 
-        self.nvim.api.buf_set_lines(self.welcome_buf, 0, 0, False, [new_line])
-        self.nvim.api.buf_set_lines(self.welcome_buf, self.win_height, len(self.nvim.current.buffer) + 1, False, [])
+        self.nvim.api.buf_set_lines(self.welc_buf, 0, 0, False, [new_line])
+        self.nvim.api.buf_set_lines(self.welc_buf, self.win_height, len(self.welc_buf) + 1, False, [])
 
     def draw_loop(self):
         while (True):
-            if self.nvim.current.buffer.number != self.welcome_buf:
+            """
+            if self.nvim.current.buffer.number != self.welc_buf:
                 self.quit()
+            """
 
             self.new_image()
 
-            self.update_cursor()
-            self.nvim.command("redraw")
+            # self.update_cursor()
+            # self.nvim.command("redraw")
             sleep(0.06)
 
     def quit(self):
-        self.nvim.command(f"silent bd! {self.welcome_buf}")
+        self.nvim.api.buf_delete(self.welc_buf, {})
         exit()
 
     def update_cursor(self):
@@ -62,7 +65,7 @@ class welcome:
     
     @pynvim.autocmd("VimResized", pattern="welcome")
     def set_win_size(self):
-        self.win_height = self.nvim.api.win_get_height(0)
-        self.win_width = self.nvim.api.win_get_width(0)
+        self.win_height = self.nvim.api.win_get_height(self.welc_win)
+        self.win_width = self.nvim.api.win_get_width(self.welc_win)
 
 
