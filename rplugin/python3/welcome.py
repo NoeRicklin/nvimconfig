@@ -52,7 +52,7 @@ class welcome:
             self.new_image()
 
             # self.update_cursor()
-            # self.nvim.command("redraw")
+            self.nvim.command("redraw")
             sleep(0.06)
 
     def quit(self):
