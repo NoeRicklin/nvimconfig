@@ -1,9 +1,6 @@
 # Shouldn't be able to edit file
-# Should be able to restart welcome screen on command
-# Error on opening 2nd nvim instance with welcome active on 1st
 # Weird behaviour when opening nvim with a file
 # Don't show cursor / remove flickering
-# Error when cursor moves out of range
 # More control for settings like color and speed
 
 # Check out: scratch-buffer, unlisted, noswapfile, bufhidden=delete, buftype=nowrite
@@ -22,11 +19,21 @@ class welcome:
 
     @pynvim.command("Welcome")
     def initiate(self):
-        self.welc_buf = self.nvim.api.create_buf(True, False)
+        if self.running:
+            return
+        self.welc_buf = self.nvim.api.create_buf(False, False)
         self.welc_buf.options["filetype"] = "welcome"
         self.welc_buf.options["buftype"] = "nowrite"
 
-        self.welc_win = self.nvim.api.open_win(self.welc_buf, False, { "relative": "editor", "row": 3, "col": 7, "width": 160, "height": 42, "style": "minimal" })
+        self.win_ops = { "relative": "editor",
+                         "row": 3,
+                         "col": 7,
+                         "width": 160,
+                         "height": 42,
+                         "style": "minimal",
+                         "focusable": False}
+
+        self.welc_win = self.nvim.api.open_win(self.welc_buf, False, self.win_ops)
         self.set_win_size()
 
         self.welc_ns = self.nvim.api.create_namespace("WelcomeFloat")
