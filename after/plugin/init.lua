@@ -1,2 +1,3 @@
-vim.filetype.add({filename = {["welcome"] = "welcome"}})
-vim.cmd("Welcome")
+if vim.api.nvim_buf_get_name(0) == "" then
+	vim.cmd("Welcome")
+end

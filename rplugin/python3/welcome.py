@@ -1,4 +1,3 @@
-# Weird behaviour when opening nvim with a file
 # Don't show cursor / remove flickering
 # More control for settings like color and speed
 
