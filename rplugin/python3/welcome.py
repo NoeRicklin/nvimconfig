@@ -18,12 +18,13 @@ class welcome:
     def __init__(self, nvim):
         self.nvim = nvim
         self.active_cols = {}
-
         self.running = False
 
     @pynvim.command("Welcome")
     def initiate(self):
         self.welc_buf = self.nvim.api.create_buf(True, False)
+        self.welc_buf.options["buftype"] = "nowrite"
+
         self.welc_win = self.nvim.api.open_win(self.welc_buf, False, { "relative": "editor", "row": 3, "col": 7, "width": 160, "height": 46, "style": "minimal" })
         self.set_win_size()
 
