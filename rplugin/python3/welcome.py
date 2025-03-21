@@ -54,7 +54,6 @@ class welcome:
     @pynvim.command("Quit")
     def quit(self):
         self.nvim.command(f"silent bd! {self.welc_buf.number}")
-        exit()
 
     def update_cursor(self):
         cur_cursor = self.nvim.current.window.cursor
