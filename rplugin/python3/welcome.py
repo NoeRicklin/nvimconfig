@@ -1,13 +1,11 @@
-# Shouldn't be able to edit file
 # Weird behaviour when opening nvim with a file
 # Don't show cursor / remove flickering
 # More control for settings like color and speed
 
-# Check out: scratch-buffer, unlisted, noswapfile, bufhidden=delete, buftype=nowrite
+# Check out: scratch-buffer, noswapfile, bufhidden=delete
 
 import pynvim
 from time import sleep
-from sys import exit
 from random import randint
 
 @pynvim.plugin
@@ -39,7 +37,7 @@ class welcome:
         self.set_win_size()
 
         self.welc_ns = self.nvim.api.create_namespace("WelcomeFloat")
-        self.nvim.api.set_hl(self.welc_ns, "Pmenu", {"ctermbg": "Red"})
+        self.nvim.api.set_hl(self.welc_ns, "Pmenu", {"ctermbg": ""})
         self.nvim.api.win_set_hl_ns(self.welc_win, self.welc_ns)
 
         self.draw_loop()
