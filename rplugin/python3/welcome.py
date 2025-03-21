@@ -24,17 +24,17 @@ class welcome:
         self.welc_buf.options["filetype"] = "welcome"
         self.welc_buf.options["buftype"] = "nowrite"
 
-        self.win_ops = { "relative": "editor",
-                         "row": 0,
-                         "col": 0,
-                         "width": 1,
-                         "height": 1,
-                         "focusable": False,
-                         "style": "minimal"}
+        self.win_ops = {"relative": "editor",
+                        "row": 0,
+                        "col": 0,
+                        "width": 1,
+                        "height": 1,
+                        "focusable": False,
+                        "style": "minimal"}
 
         self.running = True
         self.welc_win = self.nvim.api.open_win(self.welc_buf, False, self.win_ops)
-        self.set_win_size()
+        self.reset_win_size()
 
         self.welc_ns = self.nvim.api.create_namespace("WelcomeFloat")
         self.nvim.api.set_hl(self.welc_ns, "Pmenu", {"ctermbg": ""})
@@ -69,7 +69,7 @@ class welcome:
         self.running = False
 
     @pynvim.autocmd("VimResized")
-    def set_win_size(self):
+    def reset_win_size(self):
         if not self.running:
             return
         self.win_width = self.nvim.api.win_get_width(0)
@@ -80,7 +80,7 @@ class welcome:
 
         self.nvim.api.win_set_cursor(self.welc_win, [1, 0])
 
-    @pynvim.autocmd("BufNew")
+    @pynvim.autocmd("BufNew,InsertEnter")
     def quit_out(self):
         if self.running:
             self.quit()
