@@ -46,15 +46,16 @@ class welcome:
         self.nvim.api.buf_set_lines(self.welc_buf, self.win_height, len(self.welc_buf) + 1, False, [])
 
     def draw_loop(self):
-        while (True):
+        while (self.running):
             self.new_image()
 
             self.nvim.command("redraw")
             sleep(0.06)
+        self.nvim.api.buf_delete(self.welc_buf, {})
 
     @pynvim.command("Quit")
     def quit(self):
-        self.nvim.command(f"silent bd! {self.welc_buf.number}")
+        self.running = False
 
     def update_cursor(self):
         cur_cursor = self.nvim.current.window.cursor
@@ -68,8 +69,6 @@ class welcome:
 
     @pynvim.autocmd("BufNew")
     def quit_out(self):
-        if not self.running:
-            return
-
-        self.quit()
+        if self.running:
+            self.quit()
 
