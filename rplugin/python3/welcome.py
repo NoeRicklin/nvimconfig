@@ -23,10 +23,15 @@ class welcome:
     @pynvim.command("Welcome")
     def initiate(self):
         self.welc_buf = self.nvim.api.create_buf(True, False)
+        self.welc_buf.options["filetype"] = "welcome"
         self.welc_buf.options["buftype"] = "nowrite"
 
-        self.welc_win = self.nvim.api.open_win(self.welc_buf, False, { "relative": "editor", "row": 3, "col": 7, "width": 160, "height": 46, "style": "minimal" })
+        self.welc_win = self.nvim.api.open_win(self.welc_buf, False, { "relative": "editor", "row": 3, "col": 7, "width": 160, "height": 42, "style": "minimal" })
         self.set_win_size()
+
+        self.welc_ns = self.nvim.api.create_namespace("WelcomeFloat")
+        self.nvim.api.set_hl(self.welc_ns, "Pmenu", {"ctermbg": ""})
+        self.nvim.api.win_set_hl_ns(self.welc_win, self.welc_ns)
 
         self.running = True
         self.draw_loop()
