@@ -19,13 +19,15 @@ class welcome:
         self.nvim = nvim
         self.active_cols = {}
 
+        self.running = False
+
     @pynvim.command("Welcome")
     def initiate(self):
         self.welc_buf = self.nvim.api.create_buf(True, False)
-        # self.nvim.command(f"echo '{self.welc_buf}'")
         self.welc_win = self.nvim.api.open_win(self.welc_buf, False, { "relative": "editor", "row": 3, "col": 7, "width": 160, "height": 46, "style": "minimal" })
         self.set_win_size()
-        
+
+        self.running = True
         self.draw_loop()
 
         self.quit()
@@ -44,19 +46,14 @@ class welcome:
 
     def draw_loop(self):
         while (True):
-            """
-            if self.nvim.current.buffer.number != self.welc_buf:
-                self.quit()
-            """
-
             self.new_image()
 
-            # self.update_cursor()
             self.nvim.command("redraw")
             sleep(0.06)
 
+    @pynvim.command("Quit")
     def quit(self):
-        self.nvim.command(f"silent bd! {self.welcome_buf.number}")
+        self.nvim.command(f"silent bd! {self.welc_buf.number}")
         exit()
 
     def update_cursor(self):
@@ -69,4 +66,10 @@ class welcome:
         self.win_height = self.nvim.api.win_get_height(self.welc_win)
         self.win_width = self.nvim.api.win_get_width(self.welc_win)
 
+    @pynvim.autocmd("BufNew")
+    def quit_out(self):
+        if not self.running:
+            return
+
+        self.quit()
 
