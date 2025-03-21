@@ -1,9 +1,6 @@
 # Shouldn't be able to edit file
-# Should be able to restart welcome screen on command
-# Error on opening 2nd nvim instance with welcome active on 1st
 # Weird behaviour when opening nvim with a file
 # Don't show cursor / remove flickering
-# Error when cursor moves out of range
 # More control for settings like color and speed
 
 # Check out: scratch-buffer, unlisted, noswapfile, bufhidden=delete, buftype=nowrite
@@ -18,14 +15,32 @@ class welcome:
     def __init__(self, nvim):
         self.nvim = nvim
         self.active_cols = {}
+        self.running = False
 
     @pynvim.command("Welcome")
     def initiate(self):
-        self.welc_buf = self.nvim.api.create_buf(True, False)
-        # self.nvim.command(f"echo '{self.welc_buf}'")
-        self.welc_win = self.nvim.api.open_win(self.welc_buf, False, { "relative": "editor", "row": 3, "col": 7, "width": 160, "height": 46, "style": "minimal" })
+        if self.running:
+            return
+        self.welc_buf = self.nvim.api.create_buf(False, False)
+        self.welc_buf.options["filetype"] = "welcome"
+        self.welc_buf.options["buftype"] = "nowrite"
+
+        self.win_ops = { "relative": "editor",
+                         "row": 3,
+                         "col": 7,
+                         "width": 160,
+                         "height": 42,
+                         "style": "minimal",
+                         "focusable": False}
+
+        self.welc_win = self.nvim.api.open_win(self.welc_buf, False, self.win_ops)
         self.set_win_size()
-        
+
+        self.welc_ns = self.nvim.api.create_namespace("WelcomeFloat")
+        self.nvim.api.set_hl(self.welc_ns, "Pmenu", {"ctermbg": ""})
+        self.nvim.api.win_set_hl_ns(self.welc_win, self.welc_ns)
+
+        self.running = True
         self.draw_loop()
 
         self.quit()
@@ -43,21 +58,16 @@ class welcome:
         self.nvim.api.buf_set_lines(self.welc_buf, self.win_height, len(self.welc_buf) + 1, False, [])
 
     def draw_loop(self):
-        while (True):
-            """
-            if self.nvim.current.buffer.number != self.welc_buf:
-                self.quit()
-            """
-
+        while (self.running):
             self.new_image()
 
-            # self.update_cursor()
-            # self.nvim.command("redraw")
+            self.nvim.command("redraw")
             sleep(0.06)
+        self.nvim.api.buf_delete(self.welc_buf, {})
 
+    @pynvim.command("Quit")
     def quit(self):
-        self.nvim.command(f"silent bd! {self.welcome_buf.number}")
-        exit()
+        self.running = False
 
     def update_cursor(self):
         cur_cursor = self.nvim.current.window.cursor
@@ -69,4 +79,8 @@ class welcome:
         self.win_height = self.nvim.api.win_get_height(self.welc_win)
         self.win_width = self.nvim.api.win_get_width(self.welc_win)
 
+    @pynvim.autocmd("BufNew")
+    def quit_out(self):
+        if self.running:
+            self.quit()
 
