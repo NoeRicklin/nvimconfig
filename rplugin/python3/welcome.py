@@ -20,20 +20,20 @@ class welcome:
             return
 
         self.welc_buf = self.nvim.api.create_buf(False, False)
-        self.welc_buf.options["filetype"] = "welcome"
-        self.welc_buf.options["buftype"] = "nowrite"
 
         self.win_ops = {"relative": "editor",
                         "row": 0,
                         "col": 0,
                         "width": 1,
                         "height": 1,
-                        "focusable": False,
-                        "style": "minimal"}
+                        "focusable": False}
 
         self.running = True
         self.welc_win = self.nvim.api.open_win(self.welc_buf, False, self.win_ops)
         self.reset_win_size()
+
+        self.welc_buf.options["filetype"] = "welcome"
+        self.welc_buf.options["buftype"] = "nowrite"
 
         self.welc_ns = self.nvim.api.create_namespace("WelcomeFloat")
         self.nvim.api.set_hl(self.welc_ns, "Pmenu", {"ctermbg": ""})
@@ -44,7 +44,7 @@ class welcome:
         self.quit()
 
     def new_image(self):
-        self.active_cols[randint(0, self.win_width)] = randint(5, 35)
+        self.active_cols[randint(0, self.win_width)] = randint(5, 15)
         new_line = " " * self.win_width
         for col in sorted(self.active_cols):
             new_line = new_line[:col] + chr(randint(32, 64)) + new_line[col+1:]
