@@ -65,7 +65,7 @@ class welcome:
         self.win_height = self.nvim.current.window.height
 
         self.nvim.api.win_set_width(self.welc_win, self.win_width)
-        self.nvim.api.win_set_height(self.welc_win, self.win_height)
+        self.nvim.api.win_set_height(self.welc_win, self.win_height + 1)
 
         self.welc_win.cursor = (1, 0)
 
