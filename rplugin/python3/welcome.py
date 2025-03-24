@@ -19,6 +19,18 @@ class welcome:
         if self.running:
             return
 
+        self.create_screen()
+
+        self.running = True
+        self.draw_loop()
+
+        self.quit()
+
+    @pynvim.command("QuitWelcome")
+    def quit(self):
+        self.running = False
+
+    def create_screen(self):
         self.welc_buf = self.nvim.api.create_buf(False, False)  # listed=False, scratch=False
 
         self.win_ops = {"relative": "editor", "row": 0, "col": 0, "width": 1, "height": 1, "focusable": False}
@@ -26,12 +38,16 @@ class welcome:
         self.reset_win_size(initial=True)
 
         self.welc_buf.options["filetype"] = "welcome"
-        self.welc_buf.options["buftype"] = "nowrite"
+        self.welc_buf.options["buftype"] = "nofile"
+        self.welc_buf.options["bufhidden"] = "delete"
 
-        self.running = True
-        self.draw_loop()
+    def draw_loop(self):
+        while (self.running):
+            self.new_image()
 
-        self.quit()
+            self.nvim.command("redraw")
+            sleep(0.06)
+        self.nvim.api.buf_delete(self.welc_buf, {})
 
     def new_image(self):
         self.active_cols[randint(0, self.win_width)] = randint(5, 15)
@@ -44,18 +60,6 @@ class welcome:
 
         self.welc_buf[0:0] = [new_line]
         self.welc_buf[self.win_height:] = [] 
-
-    def draw_loop(self):
-        while (self.running):
-            self.new_image()
-
-            self.nvim.command("redraw")
-            sleep(0.06)
-        self.nvim.api.buf_delete(self.welc_buf, {})
-
-    @pynvim.command("QuitWelcome")
-    def quit(self):
-        self.running = False
 
     @pynvim.autocmd("VimResized")
     def reset_win_size(self, initial=False):
@@ -70,7 +74,7 @@ class welcome:
         self.welc_win.cursor = (1, 0)
 
     @pynvim.autocmd("BufEnter,InsertEnter")
-    def quit_out(self):
+    def auto_quit(self):
         if self.running:
             self.quit()
 
