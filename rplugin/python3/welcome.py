@@ -1,7 +1,4 @@
-# Don't show cursor / remove flickering
 # More control for settings like color and speed
-
-# Check out: scratch-buffer, noswapfile, bufhidden=delete
 
 import pynvim
 from time import sleep
@@ -13,6 +10,7 @@ class welcome:
         self.nvim = nvim
         self.active_cols = {}
         self.running = False
+        self.settings = {"speed": 30}
 
     @pynvim.command("Welcome")
     def initiate(self):
@@ -46,7 +44,7 @@ class welcome:
             self.new_image()
 
             self.nvim.command("redraw")
-            sleep(0.06)
+            sleep(1 / self.settings["speed"])
         self.nvim.api.buf_delete(self.welc_buf, {})
 
     def new_image(self):
@@ -77,4 +75,16 @@ class welcome:
     def auto_quit(self):
         if self.running:
             self.quit()
+
+    @pynvim.function("WelcomeSetOps")
+    def change_ops(self, args):
+        if len(args) != 1:
+            raise Exception("Invalid Parameters")
+        ops = args[0]
+        if type(ops) != dict:
+            raise Exception("Must be dictionary")
+        for op in ops:
+            if op not in self.settings:
+                raise Exception("Invalid Welcome-option")
+            self.settings[op] = ops[op]
 
