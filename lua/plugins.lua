@@ -1,7 +1,8 @@
 --TODO: Automatically pull 
 
 local plugins = {
-	"https://github.com/NoeRicklin/nvimStatusline"
+	"https://github.com/NoeRicklin/nvimStatusline",
+	"https://github.com/NoeRicklin/nvimColorscheme",
 }
 
 local pluginsPath = vim.fn.stdpath("config") .. "/lua/plugins/"
