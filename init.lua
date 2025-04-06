@@ -1,5 +1,7 @@
 require("plugins")
 
+vim.cmd("colorscheme fortune")
+
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 

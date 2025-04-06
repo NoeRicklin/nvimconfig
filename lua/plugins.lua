@@ -1,4 +1,4 @@
---TODO: Automatically pull 
+--TODO: Automatically pull updates
 
 local plugins = {
 	"https://github.com/NoeRicklin/nvimStatusline",
