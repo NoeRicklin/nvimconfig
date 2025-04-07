@@ -1,3 +1,3 @@
 syntax match welcChar "."
-highlight welcChar ctermfg=Green
+highlight welcChar guifg=#00d90e
 highlight welcWindow ctermbg=None
